@@ -1,0 +1,5 @@
+name: 'Mailer'
+type: module
+description: 'Provides email notifications when an article is created.'
+core: 8.x
+package: 'Drupalistas'

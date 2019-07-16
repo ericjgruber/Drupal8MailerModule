@@ -1,0 +1,80 @@
+<?php
+
+/**
+ * @file
+ * Contains mailer.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Entity\EntityInterface;
+
+/**
+ * Implements hook_help().
+ */
+function mailer_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the mailer module.
+    case 'help.page.mailer':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Mailer module help.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function mailer_theme() {
+  return [
+    'mailer' => [
+      'render element' => 'children',
+    ],
+  ];
+}
+
+/**
+ * @param EntityInterface $entity
+ * Implements hook_entity_insert().
+ */
+
+function mailer_entity_insert(EntityInterface $entity) {
+  if ($entity->getEntityTypeId() !== 'node' || ($entity->getEntityTypeId() === 'node' && $entity->bundle() !== 'article')) {
+    return;
+  }
+
+  $mailManager = \Drupal::service('plugin.manager.mail');
+  $module = 'mailer';
+  $key = 'create_article';
+  $to = \Drupal::currentUser()->getEmail();
+  $params['message'] = $entity->get('body')->value;
+  $params['node_title'] = $entity->label();
+  $langcode = \Drupal::currentUser()->getPreferredLangcode();
+  $send = true;
+
+  $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
+  if ($result['result'] !== true) {
+    drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
+  }
+  else {
+    drupal_set_message(t('Your message has been sent.'));
+  }
+}
+
+/**
+ * Implements hook_mail().
+ */
+function mailer_mail($key, &$message, $params) {
+
+  switch ($key) {
+    case 'create_article':
+      $message['to'] = \Drupal::config('mailer.settings')->get('notification_email');
+      $message['from'] = \Drupal::config('mailer.settings')->get('no_reply_email');
+      $message['subject'] = t('New article created: @title', ['@title' => $params['node_title']]);
+      $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed; delsp=yes';
+      $message['body'][] = $params['message'];
+      break;
+  }
+}

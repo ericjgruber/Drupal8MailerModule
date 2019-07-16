@@ -1,0 +1,7 @@
+system.admin_mailer:
+  path: '/admin/config/mailer'
+  defaults:
+    _form: 'Drupal\mailer\Form\SettingsForm'
+    _title: 'Mailer'
+  requirements:
+    _permission: 'administer site configuration'
