@@ -1,0 +1,5 @@
+system.admin_mailer:
+  title: 'Mailer Module'
+  description: 'Configuration for the Mailer module.'
+  parent: system.admin_config_system
+  route_name: system.admin_mailer
