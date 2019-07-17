@@ -49,17 +49,21 @@ function mailer_entity_insert(EntityInterface $entity) {
   $module = 'mailer';
   $key = 'create_article';
   $to = \Drupal::currentUser()->getEmail();
+  $params['reply_email'] = \Drupal::config('mailer.settings')->get('no_reply_email');
   $params['message'] = $entity->get('body')->value;
   $params['node_title'] = $entity->label();
   $langcode = \Drupal::currentUser()->getPreferredLangcode();
   $send = true;
 
   $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
+
+  $messenger = \Drupal::messenger();
+
   if ($result['result'] !== true) {
-    drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
+    $messenger->addError('There was a problem sending your message and it was not sent.');
   }
   else {
-    drupal_set_message(t('Your message has been sent.'));
+    $messenger->addMessage('Your message has been sent.');
   }
 }
 
