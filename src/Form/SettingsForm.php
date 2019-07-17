@@ -28,12 +28,6 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $form['no_reply_email'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('No-Reply Email Address'),
-      '#description' => $this->t('Reply email address to use no-reply emails'),
-      '#default_value' => $this->config('mailer.settings')->get('no_reply_email'),
-    ];
     $form['notification_email'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Notification Email Address'),
@@ -58,7 +52,6 @@ class SettingsForm extends ConfigFormBase {
     $values = $form_state->getValues();
 
     $this->config('mailer.settings')
-      ->set('no_reply_email', $values['no_reply_email'])
       ->set('notification_email', $values['notification_email'])
       ->save();
 
