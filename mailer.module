@@ -17,10 +17,10 @@ function mailer_help($route_name, RouteMatchInterface $route_match) {
     case 'help.page.mailer':
       $output = '';
       $output .= '<h3>' . t('About') . '</h3>';
-      $output .= '<p>' . t('Mailer module help.') . '</p>';
+      $output .= '<p>' . t('Welcome to the Mailer module help page! Enjoy your stay.') . '</p>';
+      $output .= '<p>' . t('The Mailer module is an example of how you can send an email to a specified address when an article is created.') . '</p>';
+      $output .= '<p>' . t('For more information about this and other modules, visit @url', ['@url' => 'https://www.creedthoughts.gov.www\creedthoughts']) . '</p>';
       return $output;
-
-    default:
   }
 }
 
